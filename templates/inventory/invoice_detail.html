@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Invoice {{ invoice.invoice_number }} - Pharmacy Inventory{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Invoice #{{ invoice.invoice_number }}</h1>
+    <a href="{% url 'download_invoice' invoice.id %}" class="btn btn-primary">
+        <i class="fas fa-download"></i> Download PDF
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>Invoice Details</h5>
+                <p><strong>Invoice Number:</strong> {{ invoice.invoice_number }}</p>
+                <p><strong>Date:</strong> {{ invoice.created_at|date:"F d, Y H:i" }}</p>
+                <p><strong>Customer:</strong> {{ invoice.customer_name|default:"Walk-in Customer" }}</p>
+                <p><strong>Served by:</strong> {{ invoice.created_by.get_full_name|default:invoice.created_by.username }}</p>
+            </div>
+        </div>
+        
+        <h5>Items Sold</h5>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Batch Number</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in invoice.sales.all %}
+                    <tr>
+                        <td>{{ sale.medicine.name }}</td>
+                        <td>{{ sale.medicine.batch_number }}</td>
+                        <td>{{ sale.quantity_sold }}</td>
+                        <td>${{ sale.unit_price }}</td>
+                        <td>${{ sale.total_amount }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="table-success">
+                        <th colspan="4">Total Amount</th>
+                        <th>${{ invoice.total_amount }}</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <div class="mt-4">
+            <a href="{% url 'sell_product' %}" class="btn btn-success">
+                <i class="fas fa-plus"></i> New Sale
+            </a>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
