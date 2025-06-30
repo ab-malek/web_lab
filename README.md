@@ -2,6 +2,24 @@
 
 A complete Django web application for managing pharmacy inventory with role-based access control, sales tracking, and automated alerts.
 
+ Quick Setup - Pharmacy Inventory System
+ ======================================
+python -m venv venv
+.\venv\Scripts\Activate
+
+ Installing dependencies...
+pip install Django==4.2.7 reportlab==4.0.4
+
+ Creating database structure...
+python manage.py makemigrations
+python manage.py migrate
+
+ Setup complete! Now run:
+ python manage.py createsuperuser
+ python manage.py runserver
+
+
+
 ## Features
 
 - **User Authentication & Role-Based Access Control**
