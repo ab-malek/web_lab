@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - Pharmacy Inventory{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Medicine Inventory</h1>
+    <a href="{% url 'add_product' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add New Medicine
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Generic Name</th>
+                        <th>Batch Number</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Expiry Date</th>
+                        <th>Manufacturer</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for medicine in medicines %}
+                    <tr>
+                        <td>{{ medicine.name }}</td>
+                        <td>{{ medicine.generic_name }}</td>
+                        <td>{{ medicine.batch_number }}</td>
+                        <td>
+                            {% if medicine.is_low_stock %}
+                                <span class="badge bg-warning">{{ medicine.quantity }}</span>
+                            {% else %}
+                                {{ medicine.quantity }}
+                            {% endif %}
+                        </td>
+                        <td>${{ medicine.price }}</td>
+                        <td>
+                            {% if medicine.is_expiring_soon %}
+                                <span class="badge bg-danger">{{ medicine.expiry_date }}</span>
+                            {% elif medicine.is_expired %}
+                                <span class="badge bg-dark">{{ medicine.expiry_date }} (Expired)</span>
+                            {% else %}
+                                {{ medicine.expiry_date }}
+                            {% endif %}
+                        </td>
+                        <td>{{ medicine.manufacturer }}</td>
+                        <td>
+                            {% if medicine.is_expired %}
+                                <span class="badge bg-dark">Expired</span>
+                            {% elif medicine.is_expiring_soon %}
+                                <span class="badge bg-danger">Expiring Soon</span>
+                            {% elif medicine.is_low_stock %}
+                                <span class="badge bg-warning">Low Stock</span>
+                            {% else %}
+                                <span class="badge bg-success">Good</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">No medicines found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

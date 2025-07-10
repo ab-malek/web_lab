@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Users - Pharmacy Inventory{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">👥 Manage Users</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <span class="badge bg-info">Total Users: {{ users.count }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">➕ Add New User</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" id="userForm">
+                    {% csrf_token %}
+                    
+                    <!-- Display non-field errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <strong>⚠️ Error:</strong>
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            <strong>Username</strong> <span class="text-danger">*</span>
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.username.errors %}
+                                    <div>❌ {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                    <strong>First Name</strong> <span class="text-danger">*</span>
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.first_name.errors %}
+                                            <div>❌ {{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                    <strong>Last Name</strong> <span class="text-danger">*</span>
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.last_name.errors %}
+                                            <div>❌ {{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">
+                            <strong>Email</strong> <span class="text-danger">*</span>
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.email.errors %}
+                                    <div>❌ {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.role.id_for_label }}" class="form-label">
+                                    <strong>Role</strong> <span class="text-danger">*</span>
+                                </label>
+                                {{ form.role }}
+                                {% if form.role.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.role.errors %}
+                                            <div>❌ {{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label">
+                                    <strong>Phone</strong> <span class="text-muted">(Optional)</span>
+                                </label>
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.phone.errors %}
+                                            <div>❌ {{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.password1.id_for_label }}" class="form-label">
+                            <strong>Password</strong> <span class="text-danger">*</span>
+                        </label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.password1.errors %}
+                                    <div>❌ {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            <small class="text-muted">
+                                <strong>Password Requirements:</strong><br>
+                                • At least 8 characters long<br>
+                                • Cannot be too similar to personal information<br>
+                                • Cannot be a commonly used password<br>
+                                • Cannot be entirely numeric
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.password2.id_for_label }}" class="form-label">
+                            <strong>Confirm Password</strong> <span class="text-danger">*</span>
+                        </label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.password2.errors %}
+                                    <div>❌ {{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-user-plus"></i> Create User
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">👤 Existing Users</h5>
+            </div>
+            <div class="card-body">
+                {% if users %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for profile in users %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ profile.user.get_full_name|default:profile.user.username }}</strong>
+                                        {% if profile.user.email %}
+                                            <br><small class="text-muted">{{ profile.user.email }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <code>{{ profile.user.username }}</code>
+                                    </td>
+                                    <td>
+                                        {% if profile.role == 'admin' %}
+                                            <span class="text-muted">🔑 {{ profile.get_role_display }}</span>
+                                        {% elif profile.role == 'manager' %}
+                                            <span class="text-muted">📊 {{ profile.get_role_display }}</span>
+                                        {% else %}
+                                            <span class="text-muted">🛒 {{ profile.get_role_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if profile.user.is_active %}
+                                            <span class="badge bg-success">✅ Active</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">❌ Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ profile.user.date_joined|date:"M d, Y" }}
+                                        </small>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <div class="text-muted">
+                            <i class="fas fa-users fa-3x mb-3"></i>
+                            <h5>No users found</h5>
+                            <p>Create your first user using the form on the left.</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.form-text {
+    color: #6c757d;
+    font-size: 0.875em;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.form-control:invalid {
+    border-color: #dc3545;
+}
+
+.form-control:valid {
+    border-color: #28a745;
+}
+
+.small {
+    font-size: 0.875em;
+}
+
+.mt-1 {
+    margin-top: 0.25rem;
+}
+
+.card-header {
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+code {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+</style>
+
+<script>
+// Auto-hide success messages after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert-success');
+    alerts.forEach(function(alert) {
+        setTimeout(function() {
+            alert.style.transition = 'opacity 0.5s';
+            alert.style.opacity = '0';
+            setTimeout(function() {
+                alert.remove();
+            }, 500);
+        }, 5000);
+    });
+});
+</script>
+{% endblock %}

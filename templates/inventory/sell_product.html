@@ -1,0 +1,400 @@
+{% extends 'base.html' %}
+
+{% block title %}Sell Products - Pharmacy Inventory{% endblock %}
+
+{% block content %}
+<style>
+    .cart-section {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .medicine-card {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background: white;
+        transition: all 0.3s ease;
+    }
+    
+    .medicine-card:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+    
+    .medicine-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .medicine-details h6 {
+        margin: 0;
+        color: #2c3e50;
+    }
+    
+    .medicine-meta {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .price-tag {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #27ae60;
+    }
+    
+    .stock-info {
+        font-size: 0.9rem;
+        color: #7f8c8d;
+    }
+    
+    .add-to-cart-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+    
+    .quantity-input {
+        width: 80px;
+    }
+    
+    .cart-item {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .cart-item-info {
+        flex: 1;
+    }
+    
+    .cart-item-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .cart-total {
+        background: #e8f5e8;
+        border: 2px solid #27ae60;
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        margin-top: 1rem;
+    }
+    
+    .empty-cart {
+        text-align: center;
+        padding: 2rem;
+        color: #6c757d;
+    }
+    
+    .btn-add-to-cart {
+        background: #3498db;
+        border-color: #3498db;
+    }
+    
+    .btn-add-to-cart:hover {
+        background: #2980b9;
+        border-color: #2980b9;
+    }
+    
+    .search-box {
+        margin-bottom: 1.5rem;
+    }
+    
+    .medicine-grid {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+</style>
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">🛒 Sell Products</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <span class="badge bg-info" id="cart-count">Cart: 0 items</span>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Available Medicines -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">📦 Available Medicines</h5>
+            </div>
+            <div class="card-body">
+                <!-- Search Box -->
+                <div class="search-box">
+                    <input type="text" class="form-control" id="medicine-search" placeholder="🔍 Search medicines by name, generic_name, batch, or manufacturer...">
+                </div>
+                
+                <!-- Medicines Grid -->
+                <div class="medicine-grid" id="medicines-container">
+                    {% for medicine in available_medicines %}
+                    <div class="medicine-card" data-medicine-id="{{ medicine.id }}" data-search-text="{{ medicine.name|lower }} {{ medicine.generic_name|lower }} {{ medicine.batch_number|lower }} {{ medicine.manufacturer|lower }}">
+                        <div class="medicine-info">
+                            <div class="medicine-details">
+                                <small class="text-muted fst-italic">{{ medicine.generic_name }}</small> 
+                                <h4>{{ medicine.name }}</h4>
+                                <div class="medicine-meta">
+                                    <span class="badge bg-secondary">{{ medicine.batch_number }}</span>
+                                    <span class="text-muted">{{ medicine.manufacturer }}</span>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="price-tag">${{ medicine.price }}</div>
+                                <div class="stock-info">Stock: {{ medicine.quantity }} units</div>
+                                <div class="stock-info">Expires: {{ medicine.expiry_date }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="add-to-cart-section">
+                            <label class="form-label mb-0">Quantity:</label>
+                            <input type="number" class="form-control quantity-input" min="1" max="{{ medicine.quantity }}" value="1" id="qty-{{ medicine.id }}">
+                            <button type="button" class="btn btn-primary btn-add-to-cart" onclick="addToCart({{ medicine.id }})">
+                                ➕ Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-cart">
+                        <h5>No medicines available</h5>
+                        <p>No medicines are currently in stock or all have expired.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shopping Cart -->
+    <div class="col-md-4">
+        <div class="cart-section">
+            <h5>🛒 Shopping Cart</h5>
+            <div id="cart-items">
+                <div class="empty-cart">
+                    <p>Cart is empty</p>
+                    <small>Add medicines from the left panel</small>
+                </div>
+            </div>
+            
+            <div id="cart-total" class="cart-total" style="display: none;">
+                <h5>Total: $<span id="total-amount">0.00</span></h5>
+            </div>
+            
+            <div id="checkout-section" style="display: none;">
+                <hr>
+                <form method="post" id="checkout-form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="customer_name" class="form-label">Customer Name (Optional)</label>
+                        <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Enter customer name">
+                    </div>
+                    <input type="hidden" name="cart_data" id="cart_data">
+                    <button type="submit" class="btn btn-success btn-lg w-100">
+                        💳 Complete Sale
+                    </button>
+                </form>
+                
+                <button type="button" class="btn btn-outline-danger btn-sm w-100 mt-2" onclick="clearCart()">
+                    🗑️ Clear Cart
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let cart = [];
+let medicines = {};
+
+// Load medicine data
+{% for medicine in available_medicines %}
+medicines[{{ medicine.id }}] = {
+    id: {{ medicine.id }},
+    name: "{{ medicine.name }}",
+    batch_number: "{{ medicine.batch_number }}",
+    price: {{ medicine.price }},
+    quantity: {{ medicine.quantity }},
+    manufacturer: "{{ medicine.manufacturer }}",
+    generic_name : "{{ medicine.generic_name }}"
+};
+{% endfor %}
+
+function addToCart(medicineId) {
+    const medicine = medicines[medicineId];
+    const quantityInput = document.getElementById(`qty-${medicineId}`);
+    const quantity = parseInt(quantityInput.value);
+    
+    if (!medicine) {
+        alert('Medicine not found');
+        return;
+    }
+    
+    if (quantity <= 0 || quantity > medicine.quantity) {
+        alert(`Please enter a valid quantity (1-${medicine.quantity})`);
+        return;
+    }
+    
+    // Check if medicine already in cart
+    const existingItem = cart.find(item => item.medicine_id === medicineId);
+    if (existingItem) {
+        const newQuantity = existingItem.quantity + quantity;
+        if (newQuantity > medicine.quantity) {
+            alert(`Cannot add more. Total would exceed available stock (${medicine.quantity})`);
+            return;
+        }
+        existingItem.quantity = newQuantity;
+    } else {
+        cart.push({
+            medicine_id: medicineId,
+            name: medicine.name,
+            batch_number: medicine.batch_number,
+            price: medicine.price,
+            quantity: quantity
+        });
+    }
+    
+    // Reset quantity input
+    quantityInput.value = 1;
+    
+    updateCartDisplay();
+}
+
+function removeFromCart(medicineId) {
+    cart = cart.filter(item => item.medicine_id !== medicineId);
+    updateCartDisplay();
+}
+
+function updateCartQuantity(medicineId, newQuantity) {
+    const medicine = medicines[medicineId];
+    const item = cart.find(item => item.medicine_id === medicineId);
+    
+    if (!item || !medicine) return;
+    
+    if (newQuantity <= 0) {
+        removeFromCart(medicineId);
+        return;
+    }
+    
+    if (newQuantity > medicine.quantity) {
+        alert(`Maximum available: ${medicine.quantity}`);
+        return;
+    }
+    
+    item.quantity = newQuantity;
+    updateCartDisplay();
+}
+
+function updateCartDisplay() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    const checkoutSection = document.getElementById('checkout-section');
+    const cartCount = document.getElementById('cart-count');
+    
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+            <div class="empty-cart">
+                <p>Cart is empty</p>
+                <small>Add medicines from the left panel</small>
+            </div>
+        `;
+        cartTotal.style.display = 'none';
+        checkoutSection.style.display = 'none';
+        cartCount.textContent = 'Cart: 0 items';
+        return;
+    }
+    
+    let totalAmount = 0;
+    let totalItems = 0;
+    let cartHTML = '';
+    
+    cart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        totalAmount += itemTotal;
+        totalItems += item.quantity;
+        
+        cartHTML += `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <strong>${item.name}</strong><br>
+                    <small class="text-muted">${item.batch_number}</small><br>
+                    <small>$${item.price} × ${item.quantity} = $${itemTotal.toFixed(2)}</small>
+                </div>
+                <div class="cart-item-actions">
+                    <input type="number" class="form-control quantity-input" 
+                           value="${item.quantity}" min="1" 
+                           onchange="updateCartQuantity(${item.medicine_id}, this.value)">
+                    <button type="button" class="btn btn-outline-danger btn-sm" 
+                            onclick="removeFromCart(${item.medicine_id})">
+                        ❌
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    cartItemsContainer.innerHTML = cartHTML;
+    document.getElementById('total-amount').textContent = totalAmount.toFixed(2);
+    cartTotal.style.display = 'block';
+    checkoutSection.style.display = 'block';
+    cartCount.textContent = `Cart: ${totalItems} items`;
+    
+    // Update hidden form field
+    document.getElementById('cart_data').value = JSON.stringify(cart);
+}
+
+function clearCart() {
+    if (confirm('Are you sure you want to clear the cart?')) {
+        cart = [];
+        updateCartDisplay();
+    }
+}
+
+// Search functionality
+document.getElementById('medicine-search').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const medicineCards = document.querySelectorAll('.medicine-card');
+    
+    medicineCards.forEach(card => {
+        const searchText = card.getAttribute('data-search-text');
+        if (searchText.includes(searchTerm)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
+
+
+// Form submission validation
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    if (cart.length === 0) {
+        e.preventDefault();
+        alert('Cart is empty. Please add items before checkout.');
+        return;
+    }
+    
+    // Confirm the sale
+    const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    
+    if (!confirm(`Complete sale of ${totalItems} items for $${totalAmount.toFixed(2)}?`)) {
+        e.preventDefault();
+    }
+});
+</script>
+{% endblock %}

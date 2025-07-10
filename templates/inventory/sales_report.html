@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}Sales Report - Pharmacy Inventory{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Sales Report (Last 30 Days)</h1>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>${{ total_sales|floatformat:2 }}</h4>
+                        <p>Total Revenue</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-dollar-sign fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ total_quantity }}</h4>
+                        <p>Units Sold</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-boxes fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ sales.count }}</h4>
+                        <p>Total Transactions</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-receipt fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if top_medicines %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="fas fa-chart-bar"></i> Top Selling Medicines</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Units Sold</th>
+                        <th>Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for medicine in top_medicines %}
+                    <tr>
+                        <td>{{ medicine.medicine__name }}</td>
+                        <td>{{ medicine.total_sold }}</td>
+                        <td>${{ medicine.total_revenue|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <h5><i class="fas fa-list"></i> All Sales Transactions</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Medicine</th>
+                        <th>Batch</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                        <th>Customer</th>
+                        <th>Sold By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in sales %}
+                    <tr>
+                        <td>{{ sale.sale_date|date:"M d, Y H:i" }}</td>
+                        <td>{{ sale.medicine.name }}</td>
+                        <td>{{ sale.medicine.batch_number }}</td>
+                        <td>{{ sale.quantity_sold }}</td>
+                        <td>${{ sale.unit_price }}</td>
+                        <td>${{ sale.total_amount }}</td>
+                        <td>{{ sale.customer_name|default:"Walk-in" }}</td>
+                        <td>{{ sale.sold_by.get_full_name|default:sale.sold_by.username }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">No sales found in the last 30 days.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
