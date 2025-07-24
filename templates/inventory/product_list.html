@@ -39,7 +39,7 @@
                                 {{ medicine.quantity }}
                             {% endif %}
                         </td>
-                        <td>${{ medicine.price }}</td>
+                        <td>Tk{{ medicine.price }}</td>
                         <td>
                             {% if medicine.is_expiring_soon %}
                                 <span class="badge bg-danger">{{ medicine.expiry_date }}</span>

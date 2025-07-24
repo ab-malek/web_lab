@@ -13,7 +13,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4>${{ total_sales|floatformat:2 }}</h4>
+                        <h4>Tk{{ total_sales|floatformat:2 }}</h4>
                         <p>Total Revenue</p>
                     </div>
                     <div class="align-self-center">
@@ -77,7 +77,7 @@
                     <tr>
                         <td>{{ medicine.medicine__name }}</td>
                         <td>{{ medicine.total_sold }}</td>
-                        <td>${{ medicine.total_revenue|floatformat:2 }}</td>
+                        <td>Tk{{ medicine.total_revenue|floatformat:2 }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -113,8 +113,8 @@
                         <td>{{ sale.medicine.name }}</td>
                         <td>{{ sale.medicine.batch_number }}</td>
                         <td>{{ sale.quantity_sold }}</td>
-                        <td>${{ sale.unit_price }}</td>
-                        <td>${{ sale.total_amount }}</td>
+                        <td>Tk{{ sale.unit_price }}</td>
+                        <td>Tk{{ sale.total_amount }}</td>
                         <td>{{ sale.customer_name|default:"Walk-in" }}</td>
                         <td>{{ sale.sold_by.get_full_name|default:sale.sold_by.username }}</td>
                     </tr>

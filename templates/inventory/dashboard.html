@@ -61,7 +61,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4>${{ total_sales_today}}</h4>
+                        <h4>Tk{{ total_sales_today}}</h4>
                         <p>{% if user.userprofile.role == 'sales_staff' %}My {% endif %}Sales Today</p>
                     </div>
                     <div class="align-self-center">
@@ -160,7 +160,7 @@
                                 <td>{{ sale.sale_date|date:"M d, Y H:i" }}</td>
                                 <td>{{ sale.medicine.name }}</td>
                                 <td>{{ sale.quantity_sold }}</td>
-                                <td>${{ sale.total_amount }}</td>
+                                <td>Tk{{ sale.total_amount }}</td>
                                 <td>{{ sale.sold_by.get_full_name|default:sale.sold_by.username }}</td>
                             </tr>
                             {% endfor %}

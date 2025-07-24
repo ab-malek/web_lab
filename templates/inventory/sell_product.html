@@ -155,7 +155,7 @@
                                 </div>
                             </div>
                             <div class="text-end">
-                                <div class="price-tag">${{ medicine.price }}</div>
+                                <div class="price-tag">Tk{{ medicine.price }}</div>
                                 <div class="stock-info">Stock: {{ medicine.quantity }} units</div>
                                 <div class="stock-info">Expires: {{ medicine.expiry_date }}</div>
                             </div>
@@ -192,7 +192,7 @@
             </div>
             
             <div id="cart-total" class="cart-total" style="display: none;">
-                <h5>Total: $<span id="total-amount">0.00</span></h5>
+                <h5>Total: Tk<span id="total-amount">0.00</span></h5>
             </div>
             
             <div id="checkout-section" style="display: none;">
@@ -332,7 +332,7 @@ function updateCartDisplay() {
                 <div class="cart-item-info">
                     <strong>${item.name}</strong><br>
                     <small class="text-muted">${item.batch_number}</small><br>
-                    <small>$${item.price} × ${item.quantity} = $${itemTotal.toFixed(2)}</small>
+                    <small>Tk${item.price} × ${item.quantity} = Tk${itemTotal.toFixed(2)}</small>
                 </div>
                 <div class="cart-item-actions">
                     <input type="number" class="form-control quantity-input" 
@@ -392,7 +392,7 @@ document.getElementById('checkout-form').addEventListener('submit', function(e) 
     const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     
-    if (!confirm(`Complete sale of ${totalItems} items for $${totalAmount.toFixed(2)}?`)) {
+    if (!confirm(`Complete sale of ${totalItems} items for Tk${totalAmount.toFixed(2)}?`)) {
         e.preventDefault();
     }
 });

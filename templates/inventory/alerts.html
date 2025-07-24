@@ -125,7 +125,7 @@
                                 {{ medicine.quantity }} units
                             </span>
                         </td>
-                        <td>${{ medicine.price }}</td>
+                        <td>Tk{{ medicine.price }}</td>
                         <td>{{ medicine.manufacturer }}</td>
                         <td>{{ medicine.expiry_date }}</td>
                     </tr>
@@ -176,7 +176,7 @@
                             {% endwith %}
                         </td>
                         <td>{{ medicine.quantity }} units</td>
-                        <td>${{ medicine.price }}</td>
+                        <td>Tk{{ medicine.price }}</td>
                         <td>{{ medicine.manufacturer }}</td>
                     </tr>
                     {% endwith %}

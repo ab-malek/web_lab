@@ -40,15 +40,15 @@
                         <td>{{ sale.medicine.name }}</td>
                         <td>{{ sale.medicine.batch_number }}</td>
                         <td>{{ sale.quantity_sold }}</td>
-                        <td>${{ sale.unit_price }}</td>
-                        <td>${{ sale.total_amount }}</td>
+                        <td>Tk{{ sale.unit_price }}</td>
+                        <td>Tk{{ sale.total_amount }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
                 <tfoot>
                     <tr class="table-success">
                         <th colspan="4">Total Amount</th>
-                        <th>${{ invoice.total_amount }}</th>
+                        <th>Tk{{ invoice.total_amount }}</th>
                     </tr>
                 </tfoot>
             </table>

@@ -50,12 +50,12 @@ def generate_invoice_pdf(invoice):
             sale.medicine.name,
             sale.medicine.batch_number,
             str(sale.quantity_sold),
-            f"${sale.unit_price:.2f}",
-            f"${sale.total_amount:.2f}"
+            f"Tk{sale.unit_price:.2f}",
+            f"Tk{sale.total_amount:.2f}"
         ])
     
     # Add total row
-    data.append(['', '', '', 'TOTAL:', f"${invoice.total_amount:.2f}"])
+    data.append(['', '', '', 'TOTAL:', f"Tk{invoice.total_amount:.2f}"])
     
     table = Table(data, colWidths=[2.5*inch, 1.5*inch, 1*inch, 1*inch, 1*inch])
     table.setStyle(TableStyle([
