@@ -55,6 +55,15 @@ def dashboard(request):
         expiry_date__gt=timezone.now().date()
     )
     
+    # Top selling medicines in last 30 days
+    thirty_days_ago = timezone.now().date() - timedelta(days=30)
+    top_medicines = (
+        Sale.objects.filter(sale_date__date__gte=thirty_days_ago)
+        .values('medicine__name')
+        .annotate(total_sold=Sum('quantity_sold'))
+        .order_by('-total_sold')[:5]
+    )
+
     context = {
         'user_profile': user_profile,
         'total_medicines': total_medicines,
@@ -62,6 +71,7 @@ def dashboard(request):
         'expiring_count': expiring_medicines.count(),
         'low_stock_medicines': low_stock_medicines[:5],
         'expiring_medicines': expiring_medicines[:5],
+        'top_medicines': top_medicines,
     }
     
     # Role-specific data
@@ -107,8 +117,40 @@ def add_product(request):
 @login_required
 @role_required(['admin', 'manager'])
 def product_list(request):
-    medicines = Medicine.objects.all().order_by('-created_at')
-    return render(request, 'inventory/product_list.html', {'medicines': medicines})
+    # Sorting
+    sort = request.GET.get('sort', 'name')
+    direction = request.GET.get('dir', 'asc')
+    from django.db.models.functions import Lower
+    valid_fields = {
+        'name': 'name',
+        'generic_name': 'generic_name',
+        'batch_number': 'batch_number',
+        'quantity': 'quantity',
+        'price': 'price',
+        'expiry_date': 'expiry_date',
+        'manufacturer': 'manufacturer',
+        'created_at': 'created_at',
+    }
+    order_field = valid_fields.get(sort, 'name')
+    string_fields = ['name', 'generic_name', 'batch_number', 'manufacturer']
+    qs = Medicine.objects.all()
+    if order_field.lstrip('-') in string_fields:
+        # Use Lower() for case-insensitive sorting
+        if direction == 'desc':
+            qs = qs.annotate(_order=Lower(order_field.lstrip('-'))).order_by('-_order')
+        else:
+            qs = qs.annotate(_order=Lower(order_field)).order_by('_order')
+    else:
+        if direction == 'desc':
+            qs = qs.order_by('-' + order_field.lstrip('-'))
+        else:
+            qs = qs.order_by(order_field)
+    context = {
+        'medicines': qs,
+        'sort': sort,
+        'dir': direction,
+    }
+    return render(request, 'inventory/product_list.html', context)
 
 
 @login_required

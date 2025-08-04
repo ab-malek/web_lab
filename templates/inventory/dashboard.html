@@ -74,36 +74,68 @@
 </div>
 
 <div class="row">
-    {% if low_stock_medicines %}
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h5><i class="fas fa-exclamation-triangle text-warning"></i> Low Stock Alert</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Medicine</th>
-                                <th>Quantity</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for medicine in low_stock_medicines %}
-                            <tr>
-                                <td>{{ medicine.name }}</td>
-                                <td><span class="badge bg-warning">{{ medicine.quantity }}</span></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+    {% if low_stock_medicines or top_medicines %}
+    <div class="row">
+        {% if low_stock_medicines %}
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-exclamation-triangle text-warning"></i> Low Stock Alert</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for medicine in low_stock_medicines %}
+                                <tr>
+                                    <td>{{ medicine.name }}</td>
+                                    <td><span class="badge bg-warning">{{ medicine.quantity }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if top_medicines %}
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-line text-success"></i> Top Selling Medicines (30 days)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Medicine</th>
+                                    <th>Sold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for med in top_medicines %}
+                                <tr>
+                                    <td>{{ med.medicine__name }}</td>
+                                    <td><span class="badge bg-success">{{ med.total_sold }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
     {% endif %}
-    
     {% if expiring_medicines %}
     <div class="col-md-6">
         <div class="card">

@@ -81,3 +81,4 @@ class Invoice(models.Model):
         if not self.invoice_number:
             self.invoice_number = f"INV{timezone.now().strftime('%Y%m%d')}{self.id or ''}"
         super().save(*args, **kwargs)
+

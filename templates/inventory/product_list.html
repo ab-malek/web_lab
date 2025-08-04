@@ -16,13 +16,62 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Generic Name</th>
-                        <th>Batch Number</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Expiry Date</th>
-                        <th>Manufacturer</th>
+                        <th>
+                            <a href="?sort=name&dir={% if sort == 'name' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                                Name
+                                {% if sort == 'name' %}
+                                    {% if dir == 'asc' %}<i class="fas fa-sort-up"></i>{% else %}<i class="fas fa-sort-down"></i>{% endif %}
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?sort=generic_name&dir={% if sort == 'generic_name' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                                Generic Name
+                                {% if sort == 'generic_name' %}
+                                    {% if dir == 'asc' %}<i class="fas fa-sort-up"></i>{% else %}<i class="fas fa-sort-down"></i>{% endif %}
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?sort=batch_number&dir={% if sort == 'batch_number' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                                Batch Number
+                                {% if sort == 'batch_number' %}
+                                    {% if dir == 'asc' %}<i class="fas fa-sort-up"></i>{% else %}<i class="fas fa-sort-down"></i>{% endif %}
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?sort=quantity&dir={% if sort == 'quantity' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                                Quantity
+                                {% if sort == 'quantity' %}
+                                    {% if dir == 'asc' %}<i class="fas fa-sort-up"></i>{% else %}<i class="fas fa-sort-down"></i>{% endif %}
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?sort=price&dir={% if sort == 'price' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                                Price
+                                {% if sort == 'price' %}
+                                    {% if dir == 'asc' %}<i class="fas fa-sort-up"></i>{% else %}<i class="fas fa-sort-down"></i>{% endif %}
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?sort=expiry_date&dir={% if sort == 'expiry_date' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                                Expiry Date
+                                {% if sort == 'expiry_date' %}
+                                    {% if dir == 'asc' %}<i class="fas fa-sort-up"></i>{% else %}<i class="fas fa-sort-down"></i>{% endif %}
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="?sort=manufacturer&dir={% if sort == 'manufacturer' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+                                Manufacturer
+                                {% if sort == 'manufacturer' %}
+                                    {% if dir == 'asc' %}<i class="fas fa-sort-up"></i>{% else %}<i class="fas fa-sort-down"></i>{% endif %}
+                                {% endif %}
+                            </a>
+                        </th>
                         <th>Status</th>
                     </tr>
                 </thead>
